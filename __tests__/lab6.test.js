@@ -29,12 +29,18 @@ describe('Basic user flow for Website', () => {
     });
     console.log(`Checking product item 1/${prodItemsData.length}`);
     // Make sure the title, price, and image are populated in the JSON
-    firstValue = prodItemsData[0];
-    if (firstValue.title.length == 0) { allArePopulated = false; }
-    if (firstValue.price.length == 0) { allArePopulated = false; }
-    if (firstValue.image.length == 0) { allArePopulated = false; }
+
+    // For Step 1 
+    // --->
+    for (let i = 0; i < 20; i++) {
+      value = prodItemsData[i];
+      if (value.title.length == 0) { allArePopulated = false; }
+      if (value.price.length == 0) { allArePopulated = false; }
+      if (value.image.length == 0) { allArePopulated = false; }
+    }
     // Expect allArePopulated to still be true
     expect(allArePopulated).toBe(true);
+    // <---
 
     // TODO - Step 1
     // Right now this function is only checking the first <product-item> it found, make it so that
