@@ -69,6 +69,23 @@ describe('Basic user flow for Website', () => {
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
     // Once you have the button, you can click it and check the innerText property of the button.
     // Once you have the innerText property, use innerText.jsonValue() to get the text value of it
+    
+    // Querying the first <product-item> element
+    const prodItem = await page.$('product-item');
+
+    // Grabbing the shadowRoot of the element
+    const shadowRoot = await prodItem.getProperty('shadowRoot');
+
+    // Querying the button from that shadowRoot
+    const button = await shadowRoot.$('button');
+
+    // Clicking button
+    await button.click();
+
+    // Checking innerText
+    const buttonText = await page.evaluate((button) => button.innerText, button);
+    expect(buttonText).toBe('Remove from Cart');
+
   }, 2500);
 
   // Check to make sure that after clicking "Add to Cart" on every <product-item> that the Cart
@@ -79,7 +96,22 @@ describe('Basic user flow for Website', () => {
     // Query select all of the <product-item> elements, then for every single product element
     // get the shadowRoot and query select the button inside, and click on it.
     // Check to see if the innerText of #cart-count is 20
-  }, 10000);
+
+    // Query select all of the <product-item> elements
+    const productItems = await page.$$('product-item');
+    
+    // Click all buttons
+    for (let i = 1; i < 20; i++) {
+      item = productItems[i];
+      const shadowRoot = await item.getProperty('shadowRoot');
+      const button = await shadowRoot.$('button');
+      await button.click();
+    }
+
+    // Check the innerText
+    const count = await page.$eval('#cart-count', (count) => count.innerText);
+    expect(count).toBe('20');
+  }, 30000);
 
   // Check to make sure that after you reload the page it remembers all of the items in your cart
   it('Checking number of items in cart on screen after reload', async () => {
