@@ -119,8 +119,12 @@ describe('Basic user flow for Website', () => {
     // Reload the page, then select all of the <product-item> elements, and check every
     // element to make sure that all of their buttons say "Remove from Cart".
     // Also check to make sure that #cart-count is still 20
+    
+    //reload the page
     await page.reload();
+    //select all of the <product-item> elements
     const prodItems = await page.$$('product-item');
+    // go through every element and make sure the button says "remove from Cart"
     for (let items in prodItems){
       const item  = prodItems[items];
       const shadowRoot = await item.getProperty('shadowRoot');
@@ -128,6 +132,7 @@ describe('Basic user flow for Website', () => {
       expect(buttonText).toBe('Remove from Cart');
   
     }
+    //Check that #cart-count is still 20
     const cartCount = await page.$eval('#cart-count', el => el.innerText);
     expect(cartCount).toBe('20');
 
@@ -140,12 +145,13 @@ describe('Basic user flow for Website', () => {
     // '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]', check to make sure it is
 
     const cart = await page.evaluate(() => { return localStorage.getItem('cart');} );
+
   
     // Expected cart
     const eCart = '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]';
   
     expect(cart).toEqual(eCart);
-
+    
   });
 
   // Checking to make sure that if you remove all of the items from the cart that the cart
@@ -155,7 +161,22 @@ describe('Basic user flow for Website', () => {
     // TODO - Step 6
     // Go through and click "Remove from Cart" on every single <product-item>, just like above.
     // Once you have, check to make sure that #cart-count is now 0
-  }, 10000);
+
+    // Query select all of the <product-item> elements
+    const productItems = await page.$$('product-item');
+    
+    // Click all buttons
+    for (let i = 0; i < 20; i++) {
+      item = productItems[i];
+      const shadowRoot = await item.getProperty('shadowRoot');
+      const button = await shadowRoot.$('button');
+      await button.click();
+    }
+
+    // Check the innerText
+    const count = await page.$eval('#cart-count', (count) => count.innerText);
+    expect(count).toBe('0');
+  }, 30000);
 
   // Checking to make sure that it remembers us removing everything from the cart
   // after we refresh the page
