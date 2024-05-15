@@ -121,6 +121,11 @@ describe('Basic user flow for Website', () => {
     }, 30000);
 
     it('Delete all', async () => {
+
+        // Wait for confirmation dialogue and press ok in the confirmation window
+        page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
         // Ctrl + Shift + D
         await page.keyboard.down('Control');
         await page.keyboard.down('Shift');
@@ -128,7 +133,6 @@ describe('Basic user flow for Website', () => {
         await page.keyboard.up('Control');
         await page.keyboard.up('Shift');
 
-        // How to press okay in the pop up confirmarion window?
         
         // Check that there are no notes left
         const notesAfterDeletion = await page.$$eval('.note', elements => elements.length);
