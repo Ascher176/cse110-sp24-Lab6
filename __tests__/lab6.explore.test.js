@@ -121,14 +121,26 @@ describe('Basic user flow for Website', () => {
     }, 30000);
 
     it('Delete all', async () => {
+<<<<<<< HEAD
         await page.evaluate(`window.confirm = () => true`)
 
+=======
+
+        // Wait for confirmation dialogue and press ok in the confirmation window
+        page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
+>>>>>>> 3f74536d0ad1d48da84fec8e3323f4b7490f7e5a
         // Ctrl + Shift + D
         await page.keyboard.down('Control');
         await page.keyboard.down('Shift');
         await page.keyboard.press('KeyD');
         await page.keyboard.up('Control');
         await page.keyboard.up('Shift');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3f74536d0ad1d48da84fec8e3323f4b7490f7e5a
         
         // Check that there are no notes left
         const notesAfterDeletion = await page.$$eval('.note', elements => elements.length);
