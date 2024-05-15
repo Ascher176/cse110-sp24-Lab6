@@ -121,7 +121,10 @@ describe('Basic user flow for Website', () => {
     }, 30000);
 
     it('Delete all', async () => {
-        await page.evaluate(`window.confirm = () => true`)
+        // Wait for confirmation dialogue and press ok in the confirmation window
+        page.on('dialog', async dialog => {
+            await dialog.accept();
+        });
 
         // Ctrl + Shift + D
         await page.keyboard.down('Control');
@@ -134,7 +137,6 @@ describe('Basic user flow for Website', () => {
         const notesAfterDeletion = await page.$$eval('.note', elements => elements.length);
         expect(notesAfterDeletion).toBe(0);
     });
-    
 
   });
   
