@@ -71,7 +71,7 @@ describe('Basic user flow for Website', () => {
         expect(notesAfterDeletion).toBe(1);
     });
 
-    it('Add multipe new nodes', async () => {
+    it('Add multipe new notes', async () => {
         for (let i = 1; i <= 3; i++) {
             await page.click('.add-note');
             await page.waitForSelector('.note');
@@ -79,24 +79,36 @@ describe('Basic user flow for Website', () => {
             await allNotes[i].click();
             await allNotes[i].type('Note ' + i);
         }
+        await page.mouse.click(1, 1);
     
         // Get number of notes
         const num = await page.$$eval('.note', notes => notes.length);
         expect(num).toBe(4);
-        
-        /* This part doesn't work
 
-        // Check text
-        const content = await page.$eval('.note', note => note.value);
-        expect(content).toBe('Another note');
-        const allNotes = await page.$$('.note');
+        // Check the text
 
-        for (let i = 1; i <= 3; i++) {
-            const content = await (await allNotes[i].getProperty('content')).jsonValue();
-            expect(content).toBe('Note ' + i);
+        //get an array of elements with class note
+        const notes = await page.$$('.note');
+        //create empty array so we can push the strings into
+        const text = [];
+
+        //Iterate over each note and extract the string from the text area in the notes.
+        for (let note in notes){
+            //getting note from the array
+            const noteCurrent = notes[note];
+            //getting the value handle through getProperty
+            const valHandle = await noteCurrent.getProperty('value');
+            //Getting the value from the handle using jsonValue
+            const val = await valHandle.jsonValue();
+            //adding the value ("string") to the text array
+            text.push(val);
         }
 
-        */
+        //testing all the strings if they are all there.
+        expect(text[0]).toBe('Another note');
+        expect(text[1]).toBe('Note 1');
+        expect(text[2]).toBe('Note 2');
+        expect(text[3]).toBe('Note 3');
     }, 30000);
 
     it('Everything is there after reload', async () => {
@@ -106,18 +118,30 @@ describe('Basic user flow for Website', () => {
         const num = await page.$$eval('.note', notes => notes.length);
         expect(num).toBe(4);
 
-        /* This part doesn't work
-        
-        // Check text
-        const allNotes = await page.$$('.note');
-        const content = await page.$eval('.note', note => note.value);
-        expect(content).toBe('Another note');
+        // Check the text
 
-        for (let i = 1; i <= 3; i++) {
-            const content = await page.$eval(allNotes[i], note => note.value);
-            expect(content).toBe('Note ' + i);
+        //get an array of elements with class note
+        const notes = await page.$$('.note');
+        //create empty array so we can push the strings into
+        const text = [];
+
+        //Iterate over each note and extract the string from the text area in the notes.
+        for (let note in notes){
+            //getting note from the array
+            const noteCurrent = notes[note];
+            //getting the value handle through getProperty
+            const valHandle = await noteCurrent.getProperty('value');
+            //Getting the value from the handle using jsonValue
+            const val = await valHandle.jsonValue();
+            //adding the value ("string") to the text array
+            text.push(val);
         }
-        */
+
+        //testing all the strings if they are all there.
+        expect(text[0]).toBe('Another note');
+        expect(text[1]).toBe('Note 1');
+        expect(text[2]).toBe('Note 2');
+        expect(text[3]).toBe('Note 3');
     }, 30000);
 
     it('Delete all', async () => {
