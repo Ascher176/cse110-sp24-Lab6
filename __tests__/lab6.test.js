@@ -145,7 +145,6 @@ describe('Basic user flow for Website', () => {
     // '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]', check to make sure it is
 
     const cart = await page.evaluate(() => { return localStorage.getItem('cart');} );
-
   
     // Expected cart
     const eCart = '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]';
@@ -186,6 +185,23 @@ describe('Basic user flow for Website', () => {
     // Reload the page once more, then go through each <product-item> to make sure that it has remembered nothing
     // is in the cart - do this by checking the text on the buttons so that they should say "Add to Cart".
     // Also check to make sure that #cart-count is still 0
+
+    //reload the page
+    await page.reload();
+    //select all of the <product-item> elements
+    const prodItems = await page.$$('product-item');
+    // go through every element and make sure the button says "Add to Cart"
+    for (let items in prodItems){
+      const item  = prodItems[items];
+      const shadowRoot = await item.getProperty('shadowRoot');
+      const buttonText = await shadowRoot.$eval('button', button => button.innerText);
+      expect(buttonText).toBe('Add to Cart');
+  
+    }
+    //Check that #cart-count is still 0
+    const cartCount = await page.$eval('#cart-count', el => el.innerText);
+    expect(cartCount).toBe('0');
+    
   }, 10000);
 
   // Checking to make sure that localStorage for the cart is as we'd expect for the
